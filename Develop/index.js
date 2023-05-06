@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const fs = require('fs');
-const crypto = require("crypto")
+const crypto = require('crypto');
 
 // Add support for serving assets
 app.use(express.static('public'));
@@ -53,7 +53,7 @@ app.get('/api/notes', (req, res) => {
 
 app.post('/api/notes', (req, res) => {
     const notes = readNotes();
-    
+
     // Use crypto to generate unique id for the note
     const newNote = {
         id: crypto.randomUUID(),
@@ -65,5 +65,20 @@ app.post('/api/notes', (req, res) => {
     writeNotes(notes);
     res.json(newNote);
 });
+
+app.delete('/api/notes/:id', (req, res) => {
+    const notes = readNotes();
+    const noteId = req.params.id;
+
+    // Filter existing notes for notes that dont have requested :id
+    const updatedNotes = notes.filter(note => note.id !== noteId);
+
+    if (updatedNotes.length !== notes.length) {
+        writeNotes(updatedNotes);
+        res.json({ success: true, message: 'Note deleted successfully.' });
+    } else {
+        res.status(404).json({ success: false, message: 'Note not found.' });
+    }
+})
 
 app.listen(3000)
