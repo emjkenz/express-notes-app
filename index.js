@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const fs = require('fs');
 const crypto = require('crypto');
+const port = process.env.PORT || 3000;
 
 // Add support for serving assets
 app.use(express.static('public'));
@@ -81,4 +82,4 @@ app.delete('/api/notes/:id', (req, res) => {
     }
 })
 
-app.listen(3000)
+app.listen(port)
